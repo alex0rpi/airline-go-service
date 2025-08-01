@@ -1,0 +1,170 @@
+openapi: 3.1.0
+info:
+  title: Fleet & Maintenance Management API
+  version: '0.1.0'
+paths:
+  /aircraft:
+    get:
+      summary: List all aircraft
+      responses:
+        '200':
+          description: Aircraft List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aircraft'
+    post:
+      summary: Create a new aircraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aircraft'
+      responses:
+        '201':
+          description: Aircraft Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AircraftCreatedResponse'
+  /routes:
+    get:
+      summary: List all routes
+      responses:
+        '200':
+          description: Route List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Route'
+    post:
+      summary: Add a new route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatedRoute'
+      responses:
+        '201':
+          description: Route created
+  /schedules:
+    get:
+      summary: List all schedules
+      responses:
+        '200':
+          description: Schedule List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+  /operations:
+    get:
+      summary: List all flight operations
+      responses:
+        '200':
+          description: Flight operation list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightOperation'
+components:
+  schemas:
+    Aircraft:
+      type: object
+      required:
+        ['id', 'registration', 'model', 'manufacture_date', 'total_cycles', 'total_flight_hours', 'status']
+      properties:
+        id:
+          type: integer
+        registration:
+          type: string
+        model:
+          type: string
+        manufacture_date:
+          type: string
+          format: date
+        total_cycles:
+          type: string
+        total_flight_hours:
+          type: integer
+        status:
+          type: string
+          enum: [active, inactive, maintenance]
+    AircraftCreatedResponse:
+      type: object
+      required: [id, registration]
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the added aircraft
+        registration:
+          type: string
+          description: Registration number of the added aircraft
+    Route:
+      type: object
+      required: [id, origin, destination, estimated_duration, distance, code]
+      properties:
+        id:
+          type: integer
+        origin:
+          type: string
+        destination:
+          type: string
+        estimated_duration:
+          type: string
+        distance:
+          type: number
+        code:
+          type: string
+    CreatedRoute:
+      type: object
+      required: [origin, destination, code]
+      properties:
+        origin:
+          type: string
+        destination:
+          type: string
+        code:
+          type: string
+    Schedule:
+      type: object
+      required: [id, route_id, days_of_week, departure_time, periodicity]
+      properties:
+        id:
+          type: integer
+        route_id:
+          type: integer
+        days_of_week:
+          type: array
+          items:
+            type: string
+        departure_time:
+          type: string
+        periodicity:
+          type: string
+    FlightOperation:
+      type: object
+      required: [id, date_time, route_id, aircraft_id, status]
+      properties:
+        id:
+          type: integer
+        date_time:
+          type: string
+          format: date-time
+        route_id:
+          type: integer
+        aircraft_id:
+          type: integer
+        status:
+          type: string
+          enum: [scheduled, boarding, in_flight, arrived, cancelled, delayed, no_info]
