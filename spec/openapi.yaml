@@ -116,6 +116,9 @@ components:
       properties:
         id:
           type: integer
+        code:
+          type: string
+          description: Unique code for the route
         origin:
           type: string
         destination:
@@ -124,8 +127,6 @@ components:
           type: string
         distance:
           type: number
-        code:
-          type: string
     CreatedRoute:
       type: object
       required: [origin, destination, code]
@@ -142,15 +143,14 @@ components:
       properties:
         id:
           type: integer
-        route_id:
+        route_code:
           type: integer
         days_of_week:
           type: array
           items:
-            type: string
+            type: integer
+            enum: [1, 2, 3, 4, 5, 6, 7]
         departure_time:
-          type: string
-        periodicity:
           type: string
     FlightOperation:
       type: object
@@ -163,7 +163,7 @@ components:
           format: date-time
         route_id:
           type: integer
-        aircraft_id:
+        aircraft_registration:
           type: integer
         status:
           type: string
